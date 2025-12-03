@@ -107,14 +107,17 @@ OUTPUT_DIR = "output"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# -------------------------------------------------------
+# JINJA2 – NEW SAFE DELIMITERS
+# -------------------------------------------------------
 env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR),
-    block_start_string="{%",
-    block_end_string="%}",
-    variable_start_string="{{",
-    variable_end_string="}}",
-    comment_start_string="{#",
-    comment_end_string="#}"
+    block_start_string="<%",
+    block_end_string="%>",
+    variable_start_string="<<",
+    variable_end_string=">>",
+    comment_start_string="<#",
+    comment_end_string="#>"
 )
 
 template = env.get_template("cv_template.tex")
