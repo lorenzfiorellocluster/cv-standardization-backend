@@ -1,9 +1,10 @@
 import os
+import subprocess
 from jinja2 import Environment, FileSystemLoader
-import re
+from pdf2docx import Converter
 
 # -------------------------------------------------------
-# LATEX ESCAPE FILTER (FONDAMENTALE!)
+# LATEX ESCAPE FILTER
 # -------------------------------------------------------
 def latex_escape(text):
     """Escapa caratteri speciali LaTeX"""
@@ -31,6 +32,7 @@ def latex_escape(text):
         text = text.replace(old, new)
     
     return text
+
 # -------------------------------------------------------
 # JSON DI TEST
 # -------------------------------------------------------
@@ -127,7 +129,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 cv["logo_path"] = os.path.abspath("assets/cluster_reply_logo.jpg")
 
 # -------------------------------------------------------
-# JINJA RENDERING CON FILTRO CUSTOM
+# JINJA RENDERING
 # -------------------------------------------------------
 env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR),
@@ -143,7 +145,7 @@ env = Environment(
 env.filters['tex'] = latex_escape
 
 template = env.get_template("cv_template.tex")
-latex_output = template.render(**cv)  # Nota: **cv invece di cv=cv
+latex_output = template.render(**cv)
 
 tex_path = os.path.join(OUTPUT_DIR, "cv_output.tex")
 
@@ -153,19 +155,68 @@ with open(tex_path, "w", encoding="utf-8") as f:
 print("✔ Generated LaTeX:", tex_path)
 
 # -------------------------------------------------------
-# DOCX
+# COMPILE LATEX TO PDF
 # -------------------------------------------------------
-from docx import Document
+print("\n🔄 Compiling LaTeX to PDF...")
 
-doc = Document()
-doc.add_heading(cv["personal_info"]["full_name"], level=1)
-doc.add_paragraph(cv["summary"])
+try:
+    # Run pdflatex twice for proper rendering (references, TOC, etc.)
+    for i in range(2):
+        result = subprocess.run(
+            ["pdflatex", "-interaction=nonstopmode", "-output-directory", OUTPUT_DIR, tex_path],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        
+        if result.returncode != 0:
+            print(f"⚠️ pdflatex run {i+1} had warnings/errors")
+            # Even with warnings, PDF might be generated
+    
+    pdf_path = os.path.join(OUTPUT_DIR, "cv_output.pdf")
+    
+    if os.path.exists(pdf_path):
+        print(f"✔ Generated PDF: {pdf_path}")
+    else:
+        print("❌ PDF generation failed!")
+        print(result.stderr)
+        exit(1)
+        
+except FileNotFoundError:
+    print("❌ pdflatex not found! Please install TeX Live or MiKTeX")
+    exit(1)
 
-doc.add_heading("Key Achievements", level=2)
-for ach in cv["key_achievements"]:
-    doc.add_paragraph(f"- {ach}")
+# -------------------------------------------------------
+# CONVERT PDF TO DOCX
+# -------------------------------------------------------
+print("\n🔄 Converting PDF to DOCX...")
 
-doc_path = os.path.join(OUTPUT_DIR, "cv_output.docx")
-doc.save(doc_path)
+docx_path = os.path.join(OUTPUT_DIR, "cv_output.docx")
 
-print("✔ Generated DOCX:", doc_path)
+try:
+    cv_converter = Converter(pdf_path)
+    cv_converter.convert(docx_path)
+    cv_converter.close()
+    
+    print(f"✔ Generated DOCX: {docx_path}")
+    
+except Exception as e:
+    print(f"❌ DOCX conversion failed: {e}")
+    exit(1)
+
+# -------------------------------------------------------
+# CLEANUP (optional - rimuove file ausiliari LaTeX)
+# -------------------------------------------------------
+print("\n🧹 Cleaning up auxiliary files...")
+
+aux_extensions = ['.aux', '.log', '.out']
+for ext in aux_extensions:
+    aux_file = os.path.join(OUTPUT_DIR, f"cv_output{ext}")
+    if os.path.exists(aux_file):
+        os.remove(aux_file)
+        print(f"  Removed: {aux_file}")
+
+print("\n✅ DONE! All files generated successfully!")
+print(f"  📄 LaTeX: {tex_path}")
+print(f"  📕 PDF:   {pdf_path}")
+print(f"  📘 DOCX:  {docx_path}")
