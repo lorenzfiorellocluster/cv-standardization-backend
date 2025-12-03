@@ -1,7 +1,134 @@
-\documentclass{article}
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1.7cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{setspace}
+
+% Colors
+\definecolor{replygreen}{HTML}{009639}
+\definecolor{lightgreen}{HTML}{C7EED4}
+
+% Section heading with icon
+\newcommand{\sectionicon}[2]{
+    \vspace{0.8em}
+    {\Large \textcolor{replygreen}{#1\ \textbf{#2}}}
+    \vspace{0.4em}
+}
+
 \begin{document}
 
-\section*{Summary}
+% -----------------------------------------------
+% HEADER WITH LOGO + PERSONAL INFO
+% -----------------------------------------------
+\begin{minipage}{0.70\textwidth}
+    {\Large \textbf{ID n° {{ id }} }}\\[0.4em]
+    {\large {{ personal_info.role }} }\\
+    {{ personal_info.department }}\\
+\end{minipage}
+\begin{minipage}{0.29\textwidth}
+    \begin{flushright}
+        \includegraphics[width=3.2cm]{ {{ logo_path }} }
+    \end{flushright}
+\end{minipage}
+
+\vspace{1em}
+
+% -----------------------------------------------
+% SUMMARY
+% -----------------------------------------------
+\sectionicon{\faLightbulb}{SUMMARY}
+
+\begin{tcolorbox}[
+    colback=lightgreen,
+    colframe=replygreen,
+    rounded corners,
+    boxrule=0.7pt
+]
 {{ summary }}
+
+\medskip
+\textbf{Key Achievements:}
+\begin{itemize}
+{% for ach in key_achievements %}
+    \item {{ ach }}
+{% endfor %}
+\end{itemize}
+\end{tcolorbox}
+
+% -----------------------------------------------
+% KEY SKILLS
+% -----------------------------------------------
+\sectionicon{\faTools}{KEY SKILLS}
+
+\begin{multicols}{2}
+
+{% for section in key_skills %}
+\textbf{\textcolor{replygreen}{ {{ section.category }} }}\\[-0.4em]
+\begin{itemize}
+{% for item in section.items %}
+    \item {{ item }}
+{% endfor %}
+\end{itemize}
+\vspace{0.5em}
+{% endfor %}
+
+\end{multicols}
+
+% -----------------------------------------------
+% CERTIFICATIONS
+% -----------------------------------------------
+\sectionicon{\faCertificate}{CERTIFICATIONS}
+
+\begin{tcolorbox}[
+    colback=white,
+    colframe=replygreen,
+    rounded corners,
+    boxrule=0.7pt
+]
+\begin{tabularx}{\textwidth}{XXX}
+{% for cert in certifications %}
+\textbf{{ cert.name }} \\ {{ cert.code }} -- {{ cert.year }}
+{% if not loop.last %} & {% endif %}
+{% if loop.index % 3 == 0 %} \\[0.5em] {% endif %}
+{% endfor %}
+\end{tabularx}
+\end{tcolorbox}
+
+% -----------------------------------------------
+% LANGUAGES
+% -----------------------------------------------
+\sectionicon{\faGlobe}{LANGUAGES}
+
+\begin{itemize}
+{% for lang in languages %}
+    \item \textbf{{ lang.language }}: {{ lang.level }}
+{% endfor %}
+\end{itemize}
+
+% -----------------------------------------------
+% WORK EXPERIENCE
+% -----------------------------------------------
+\sectionicon{\faBriefcase}{WORK EXPERIENCE}
+
+{% for exp in experience %}
+\textbf{{ exp.role }} at {{ exp.company }} \hfill {\em {{ exp.start_date }} -- {{ exp.end_date }} }\\[0.4em]
+
+\begin{itemize}
+{% for point in exp.description_list %}
+    \item {{ point }}
+{% endfor %}
+\end{itemize}
+
+\vspace{0.6em}
+{% endfor %}
 
 \end{document}
