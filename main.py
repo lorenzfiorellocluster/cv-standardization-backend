@@ -1,9 +1,38 @@
 import os
 from jinja2 import Environment, FileSystemLoader
-from docx import Document
+import re
 
 # -------------------------------------------------------
-# JSON DI TEST INSERITO DIRETTAMENTE NEL CODICE
+# LATEX ESCAPE FILTER (FONDAMENTALE!)
+# -------------------------------------------------------
+def latex_escape(text):
+    """Escapa caratteri speciali LaTeX"""
+    if text is None:
+        return ""
+    
+    text = str(text)
+    
+    # Caratteri speciali LaTeX da escapare
+    # ORDINE IMPORTANTE: \ per primo, poi gli altri
+    replacements = [
+        ('\\', r'\textbackslash '),  # backslash per primo
+        ('&', r'\&'),
+        ('%', r'\%'),
+        ('$', r'\$'),
+        ('#', r'\#'),
+        ('_', r'\_'),
+        ('{', r'\{'),
+        ('}', r'\}'),
+        ('~', r'\textasciitilde '),
+        ('^', r'\^{}'),
+    ]
+    
+    for old, new in replacements:
+        text = text.replace(old, new)
+    
+    return text
+# -------------------------------------------------------
+# JSON DI TEST
 # -------------------------------------------------------
 cv = {
     "id": "00001",
@@ -83,32 +112,22 @@ cv = {
                 "Speaker at Developer Summit Berlin 2025: AI Security & Workflows"
             ]
         }
-    ],
-
-    "relevant_skills_for_request": [
-        {
-            "skill": "Terraform",
-            "confidence": "0.95",
-            "quote_from_cv": "experience with Terraform modules"
-        }
     ]
 }
 
 # -------------------------------------------------------
-# ADD LOGO PATH FOR LATEX
-# -------------------------------------------------------
-cv["logo_path"] = "../assets/cluster_reply_logo.jpg"
-
-# -------------------------------------------------------
-# RENDER LATEX
+# PATHS
 # -------------------------------------------------------
 TEMPLATE_DIR = "template"
 OUTPUT_DIR = "output"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# LOGO PATH FIX (absolute path)
+cv["logo_path"] = os.path.abspath("assets/cluster_reply_logo.jpg")
+
 # -------------------------------------------------------
-# JINJA2 – NEW SAFE DELIMITERS
+# JINJA RENDERING CON FILTRO CUSTOM
 # -------------------------------------------------------
 env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR),
@@ -120,18 +139,24 @@ env = Environment(
     comment_end_string="#>"
 )
 
+# AGGIUNGI IL FILTRO 'tex'
+env.filters['tex'] = latex_escape
+
 template = env.get_template("cv_template.tex")
-latex_output = template.render(cv)
+latex_output = template.render(**cv)  # Nota: **cv invece di cv=cv
 
 tex_path = os.path.join(OUTPUT_DIR, "cv_output.tex")
+
 with open(tex_path, "w", encoding="utf-8") as f:
     f.write(latex_output)
 
 print("✔ Generated LaTeX:", tex_path)
 
 # -------------------------------------------------------
-# GENERATE SIMPLE DOCX VERSION
+# DOCX
 # -------------------------------------------------------
+from docx import Document
+
 doc = Document()
 doc.add_heading(cv["personal_info"]["full_name"], level=1)
 doc.add_paragraph(cv["summary"])

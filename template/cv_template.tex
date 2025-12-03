@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[margin=1.7cm]{geometry}
+\usepackage[margin=1.6cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
@@ -11,122 +11,142 @@
 \usepackage{multicol}
 \usepackage{tcolorbox}
 \usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{hyperref}
 
-% Colors
+% --------------------------------------------------
+% COLORS
+% --------------------------------------------------
 \definecolor{replygreen}{HTML}{009639}
-\definecolor{lightgreen}{HTML}{C7EED4}
+\definecolor{softgray}{HTML}{F3F3F3}
 
-% Section heading with icon
+% --------------------------------------------------
+% SAFE MACROS (fully LaTeX-safe)
+% --------------------------------------------------
+\newcommand{\safe}[1]{\texorpdfstring{#1}{#1}}
+
+% --------------------------------------------------
+% SECTION TITLE
+% --------------------------------------------------
 \newcommand{\sectionicon}[2]{
-    \vspace{1em}
-    \noindent {\Large \textcolor{replygreen}{#1\ \textbf{#2}}}\\[0.6em]
+    \vspace{0.8em}
+    {\Large \textbf{\textcolor{replygreen}{#1\ \safe{#2}}}}\\[0.4em]
 }
+
+% --------------------------------------------------
+% BULLETS
+% --------------------------------------------------
+\newcommand{\greenbullet}{\textcolor{replygreen}{\large\textbullet}\ }
+\setlist[itemize]{leftmargin=1.1em, label=\greenbullet, topsep=2pt}
 
 \begin{document}
 
-% -----------------------------------------------
-% HEADER WITH LOGO + PERSONAL INFO
-% -----------------------------------------------
-\begin{minipage}{0.70\textwidth}
-    {\Large \textbf{ID n° << id >> }}\\[0.4em]
-    {\large << personal_info.role >> }\\
-    << personal_info.department >>\\
+% --------------------------------------------------
+% HEADER
+% --------------------------------------------------
+\noindent
+\begin{minipage}{0.62\textwidth}
+    {\Large \textbf{\textcolor{replygreen}{ID n° \safe{<< id | tex >>}}}}\\[0.2em]
+    {\large \textbf{\safe{<< personal_info.department | tex >>}}}\\
+    {\large \safe{<< personal_info.role | tex >>}}
 \end{minipage}
-\begin{minipage}{0.29\textwidth}
+\begin{minipage}{0.36\textwidth}
     \begin{flushright}
-        \includegraphics[width=3.2cm]{<< logo_path >>}
+        \includegraphics[width=3.5cm]{<< logo_path >>}
     \end{flushright}
 \end{minipage}
 
-\vspace{1em}
+\vspace{0.8em}
 
-% -----------------------------------------------
+% --------------------------------------------------
 % SUMMARY
-% -----------------------------------------------
+% --------------------------------------------------
 \sectionicon{\faLightbulb}{SUMMARY}
 
 \begin{tcolorbox}[
-    colback=lightgreen,
+    colback=softgray,
     colframe=replygreen,
     rounded corners,
-    boxrule=0.7pt
+    boxrule=0.8pt
 ]
-<< summary >>
+\safe{<< summary | tex >>}
 
 \medskip
 \textbf{Key Achievements:}
 \begin{itemize}
 <% for ach in key_achievements %>
-    \item << ach >>
+    \item \safe{<< ach | tex >>}
 <% endfor %>
 \end{itemize}
 \end{tcolorbox}
 
-% -----------------------------------------------
+% --------------------------------------------------
 % KEY SKILLS
-% -----------------------------------------------
+% --------------------------------------------------
 \sectionicon{\faTools}{KEY SKILLS}
 
 \begin{multicols}{2}
-
 <% for section in key_skills %>
-\textbf{\textcolor{replygreen}{ << section.category >> }}\\[-0.4em]
+
+\textbf{\textcolor{replygreen}{\safe{<< section.category | tex >>}}}\\[-0.2em]
+
 \begin{itemize}
-<% for item in section.items %>
-    \item << item >>
+<% for item in section["items"] %>
+    \item \safe{<< item | tex >>}
 <% endfor %>
 \end{itemize}
-\vspace{0.5em}
-<% endfor %>
 
+\vspace{0.4em}
+
+<% endfor %>
 \end{multicols}
 
-% -----------------------------------------------
+% --------------------------------------------------
 % CERTIFICATIONS
-% -----------------------------------------------
+% --------------------------------------------------
 \sectionicon{\faCertificate}{CERTIFICATIONS}
 
-\begin{tcolorbox}[
-    colback=white,
-    colframe=replygreen,
-    rounded corners,
-    boxrule=0.7pt
-]
-\begin{tabularx}{\textwidth}{X X X}
+\begin{tcolorbox}[colback=white, colframe=replygreen, rounded corners, boxrule=0.7pt]
 <% for cert in certifications %>
-\textbf{<< cert.name >>} (<< cert.code >>, << cert.year >>)
-<% if loop.index % 3 != 0 %> & <% endif %>
-<% if loop.index % 3 == 0 %> \\[0.6em] <% endif %>
+\textbf{\textcolor{replygreen}{\safe{<< cert.name | tex >>}}} \\
+\safe{<< cert.code | tex >>} -- \safe{<< cert.year | tex >>}
+<% if not loop.last %>
+
+\vspace{0.4em}
+<% endif %>
 <% endfor %>
-\end{tabularx}
 \end{tcolorbox}
 
-% -----------------------------------------------
+% --------------------------------------------------
 % LANGUAGES
-% -----------------------------------------------
+% --------------------------------------------------
 \sectionicon{\faGlobe}{LANGUAGES}
 
 \begin{itemize}
 <% for lang in languages %>
-    \item \textbf{<< lang.language >>}: << lang.level >>
+    \item \textbf{\safe{<< lang.language | tex >>}}: \safe{<< lang.level | tex >>}
 <% endfor %>
 \end{itemize}
 
-% -----------------------------------------------
+% --------------------------------------------------
 % WORK EXPERIENCE
-% -----------------------------------------------
+% --------------------------------------------------
 \sectionicon{\faBriefcase}{WORK EXPERIENCE}
 
 <% for exp in experience %>
-\textbf{<< exp.role >>} at << exp.company >> \hfill {\em << exp.start_date >> -- << exp.end_date >> }\\[0.4em]
+
+\textbf{\textcolor{replygreen}{\safe{<< exp.role | tex >>}}} -- \safe{<< exp.company | tex >>}  
+\emph{\safe{<< exp.start_date | tex >>} -- \safe{<< exp.end_date | tex >>}}
 
 \begin{itemize}
 <% for point in exp.description_list %>
-    \item << point >>
+    \item \safe{<< point | tex >>}
 <% endfor %>
 \end{itemize}
 
-\vspace{0.6em}
+\vspace{0.4em}
+
 <% endfor %>
 
 \end{document}

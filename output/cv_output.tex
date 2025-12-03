@@ -1,7 +1,227 @@
-\documentclass{article}
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1.6cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% --------------------------------------------------
+% COLORS
+% --------------------------------------------------
+\definecolor{replygreen}{HTML}{009639}
+\definecolor{softgray}{HTML}{F3F3F3}
+
+% --------------------------------------------------
+% SAFE MACROS (fully LaTeX-safe)
+% --------------------------------------------------
+\newcommand{\safe}[1]{\texorpdfstring{#1}{#1}}
+
+% --------------------------------------------------
+% SECTION TITLE
+% --------------------------------------------------
+\newcommand{\sectionicon}[2]{
+    \vspace{0.8em}
+    {\Large \textbf{\textcolor{replygreen}{#1\ \safe{#2}}}}\\[0.4em]
+}
+
+% --------------------------------------------------
+% BULLETS
+% --------------------------------------------------
+\newcommand{\greenbullet}{\textcolor{replygreen}{\large\textbullet}\ }
+\setlist[itemize]{leftmargin=1.1em, label=\greenbullet, topsep=2pt}
+
 \begin{document}
 
-\section*{Summary}
-Hello, this is a test.
+% --------------------------------------------------
+% HEADER
+% --------------------------------------------------
+\noindent
+\begin{minipage}{0.62\textwidth}
+    {\Large \textbf{\textcolor{replygreen}{ID n° \safe{00001}}}}\\[0.2em]
+    {\large \textbf{\safe{Consultant – Cloud Engineering}}}\\
+    {\large \safe{Cloud Engineering Consultant}}
+\end{minipage}
+\begin{minipage}{0.36\textwidth}
+    \begin{flushright}
+        \includegraphics[width=3.5cm]{/workspaces/cv-standardization-backend/assets/cluster_reply_logo.jpg}
+    \end{flushright}
+\end{minipage}
+
+\vspace{0.8em}
+
+% --------------------------------------------------
+% SUMMARY
+% --------------------------------------------------
+\sectionicon{\faLightbulb}{SUMMARY}
+
+\begin{tcolorbox}[
+    colback=softgray,
+    colframe=replygreen,
+    rounded corners,
+    boxrule=0.8pt
+]
+\safe{Cloud Engineering Consultant with hands-on experience on Azure, AWS, Terraform and DevOps automation.}
+
+\medskip
+\textbf{Key Achievements:}
+\begin{itemize}
+
+    \item \safe{30\% faster deployments through CI/CD optimization}
+
+    \item \safe{35\% reduction in code review time via AI-powered tooling}
+
+    \item \safe{30\% cost optimization on cloud workloads}
+
+    \item \safe{90\% faster environment provisioning with Terraform modules}
+
+\end{itemize}
+\end{tcolorbox}
+
+% --------------------------------------------------
+% KEY SKILLS
+% --------------------------------------------------
+\sectionicon{\faTools}{KEY SKILLS}
+
+\begin{multicols}{2}
+
+
+\textbf{\textcolor{replygreen}{\safe{Cloud Platforms}}}\\[-0.2em]
+
+\begin{itemize}
+
+    \item \safe{Azure (2 yrs): AKS, App Services, Storage, VNets}
+
+    \item \safe{AWS (1.5 yrs): EC2, Lambda, RDS, CloudWatch}
+
+\end{itemize}
+
+\vspace{0.4em}
+
+
+
+\textbf{\textcolor{replygreen}{\safe{Programming \& Scripting}}}\\[-0.2em]
+
+\begin{itemize}
+
+    \item \safe{PowerShell (2 yrs)}
+
+    \item \safe{Python}
+
+    \item \safe{Bash}
+
+    \item \safe{YAML}
+
+    \item \safe{JSON}
+
+\end{itemize}
+
+\vspace{0.4em}
+
+
+
+\textbf{\textcolor{replygreen}{\safe{Infrastructure as Code}}}\\[-0.2em]
+
+\begin{itemize}
+
+    \item \safe{Terraform (2 yrs)}
+
+    \item \safe{Bicep}
+
+    \item \safe{CloudFormation}
+
+\end{itemize}
+
+\vspace{0.4em}
+
+
+
+\textbf{\textcolor{replygreen}{\safe{Containers \& Orchestration}}}\\[-0.2em]
+
+\begin{itemize}
+
+    \item \safe{Docker (2 yrs)}
+
+    \item \safe{Kubernetes/AKS}
+
+    \item \safe{Azure Container Apps}
+
+\end{itemize}
+
+\vspace{0.4em}
+
+
+\end{multicols}
+
+% --------------------------------------------------
+% CERTIFICATIONS
+% --------------------------------------------------
+\sectionicon{\faCertificate}{CERTIFICATIONS}
+
+\begin{tcolorbox}[colback=white, colframe=replygreen, rounded corners, boxrule=0.7pt]
+
+\textbf{\textcolor{replygreen}{\safe{Azure Administrator}}} \\
+\safe{AZ-104} -- \safe{2025}
+
+
+\\[0.4em]
+
+
+\textbf{\textcolor{replygreen}{\safe{Terraform Associate}}} \\
+\safe{003} -- \safe{2025}
+
+
+\\[0.4em]
+
+
+\textbf{\textcolor{replygreen}{\safe{Solutions Architect}}} \\
+\safe{SAA-C03} -- \safe{2024}
+
+
+\end{tcolorbox}
+
+% --------------------------------------------------
+% LANGUAGES
+% --------------------------------------------------
+\sectionicon{\faGlobe}{LANGUAGES}
+
+\begin{itemize}
+
+    \item \textbf{\safe{German}}: \safe{Native}
+
+    \item \textbf{\safe{English}}: \safe{Fluent (C2)}
+
+\end{itemize}
+
+% --------------------------------------------------
+% WORK EXPERIENCE
+% --------------------------------------------------
+\sectionicon{\faBriefcase}{WORK EXPERIENCE}
+
+
+
+\textbf{\textcolor{replygreen}{\safe{Cloud Engineer}}} -- \safe{Cluster Reply GmbH}  
+\emph{\safe{April 2025} -- \safe{Present}}
+
+\begin{itemize}
+
+    \item \safe{Cloud engineering, IaC automation, DevOps}
+
+    \item \safe{Speaker at Developer Summit Berlin 2025: AI Security \& Workflows}
+
+\end{itemize}
+
+\vspace{0.4em}
+
+
 
 \end{document}
