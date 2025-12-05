@@ -83,6 +83,8 @@ cv-standardization-backend/
 │   └── cv_template.tex        # LaTeX CV template (Jinja2)
 └── assets/
     └── cluster_reply_logo.jpg # Company logo
+
+Note: main.py as of now uses a JSON example to generate .pdf and .docx. The deployment solution must receive the JSON during the POST call by the Copilot agent.
 ```
 
 ---
