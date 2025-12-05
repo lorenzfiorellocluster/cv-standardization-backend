@@ -92,7 +92,7 @@ cv-standardization-backend/
 - **Backend**: FastAPI (Python)
 - **Templating**: Jinja2
 - **Document Generation**: LaTeX (pdflatex/lualatex)
-- **PDF → DOCX**: pdf2docx
+- **PDF → DOCX**: pdf2docx (tconverting the pdf to docx does not give a result
 - **Deployment**: Render.com (Free tier) or Azure Container Apps
 - **AI Integration**: Microsoft Copilot Studio
 
@@ -104,7 +104,7 @@ cv-standardization-backend/
 Generate a CV from structured JSON data.
 
 **Request Body:**
-```json
+```json example
 {
   "id": "00001",
   "personal_info": {
@@ -212,10 +212,8 @@ Health check endpoint.
 ### Render.com (Current)
 The API is deployed on Render.com free tier.
 
-**Note**: Render Free tier has limitations with system package installation. For production, use Docker deployment or Azure Container Apps.
+**Note**: Render Free tier has limitations with system package installation. It can't install the requirements.txt needed for the solution, nor texlive. For production, the suggested approach is Azure Container Apps.
 
-### Azure Container Apps (Recommended for Production)
-Full Docker support with TeX Live included.
 
 ---
 
